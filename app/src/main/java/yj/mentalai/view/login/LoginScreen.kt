@@ -65,7 +65,7 @@ fun LoginScreen() {
                 maxLines = 1
             )
             Button(onClick = { /*TODO*/ }) {
-                Text(text = "Login with Google")
+                Text(text = "Login with Email")
             }
         }
     }

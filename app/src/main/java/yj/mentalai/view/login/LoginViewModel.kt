@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    val context : ApplicationContext
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
 }
