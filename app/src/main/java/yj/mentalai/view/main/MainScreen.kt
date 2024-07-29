@@ -31,7 +31,7 @@ import yj.mentalai.ui.theme.PurpleGrey80
 @Composable
 fun MainScreen() {
     var selectedItem by remember {
-        mutableIntStateOf(1)
+        mutableIntStateOf(0)
     }
     val navController = rememberNavController()
 

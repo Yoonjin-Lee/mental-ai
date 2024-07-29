@@ -1,6 +1,7 @@
 package yj.mentalai.view.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,13 +34,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import yj.mentalai.R
+import yj.mentalai.data.DiaryData
 import yj.mentalai.data.GoalData
 import yj.mentalai.ui.theme.MentalAITheme
+import yj.mentalai.ui.theme.Pink60
 import yj.mentalai.ui.theme.Pink80
 import yj.mentalai.ui.theme.Purple80
 import yj.mentalai.ui.theme.PurpleGrey40
 import yj.mentalai.ui.theme.PurpleGrey80
+import yj.mentalai.view.main.MainViewModel
 import kotlin.math.roundToInt
 
 @Composable
@@ -47,7 +52,7 @@ fun HomeScreen() {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp, 0.dp),
     ) {
         Column(
             modifier = Modifier
@@ -73,8 +78,22 @@ fun DiaryList() {
             .fillMaxWidth()
     ) {
         val diaryList = listOf(
-            "7월 29일",
-            "7월 30일"
+            DiaryData(
+                "7월 29일",
+                true
+            ),
+            DiaryData(
+                "7월 30일",
+                false
+            ),
+            DiaryData(
+                "7월 29일",
+                true
+            ),
+            DiaryData(
+                "7월 30일",
+                false
+            )
         )
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -88,13 +107,16 @@ fun DiaryList() {
 
 @Composable
 fun DiaryItem(
-    date: String
+    data: DiaryData
 ) {
+    val viewModel: MainViewModel = hiltViewModel()
     Card(
-        modifier = Modifier.background(
-            color = Color.White,
-            shape = RoundedCornerShape(16.dp)
-        )
+        modifier = Modifier
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .clickable { viewModel.writeDiary(data.date) }
     ) {
         Column(
             modifier = Modifier
@@ -103,7 +125,7 @@ fun DiaryItem(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = date,
+                text = data.date,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
             )
@@ -111,7 +133,7 @@ fun DiaryItem(
             Box(
                 modifier = Modifier
                     .background(
-                        color = Color.White,
+                        color = if (data.written) Pink60 else Color.White,
                         shape = CircleShape
                     )
                     .clip(shape = CircleShape)
@@ -124,6 +146,11 @@ fun DiaryItem(
 @Composable
 fun GoalList() {
     val goalList = listOf(
+        GoalData(
+            "밥 먹기",
+            7,
+            3
+        ),
         GoalData(
             "밥 먹기",
             7,
@@ -159,6 +186,7 @@ fun GoalList() {
 fun GoalItem(
     data: GoalData
 ) {
+    val viewModel: MainViewModel = hiltViewModel()
     Card(
         modifier = Modifier
             .background(
@@ -179,14 +207,15 @@ fun GoalItem(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Center
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { viewModel.goToDetails() }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.round_keyboard_arrow_right_24),
                         contentDescription = "화면 이동",
                     )
                 }
                 Text(
-                    text = (data.progress.toFloat() / data.total * 100).roundToInt().toString() + "%",
+                    text = (data.progress.toFloat() / data.total * 100).roundToInt()
+                        .toString() + "%",
                     modifier = Modifier.padding(10.dp)
                 )
                 LinearProgressIndicator(

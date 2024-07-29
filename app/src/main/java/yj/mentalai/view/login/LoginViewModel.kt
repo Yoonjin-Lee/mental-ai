@@ -1,14 +1,10 @@
 package yj.mentalai.view.login
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import yj.mentalai.view.main.MainActivity
@@ -23,7 +19,7 @@ class LoginViewModel @Inject constructor(
     fun goToMain() {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(context, intent, null)
+        context.startActivity(intent)
     }
 
     fun signUp(
