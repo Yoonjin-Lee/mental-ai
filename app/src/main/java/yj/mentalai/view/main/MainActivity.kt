@@ -1,4 +1,4 @@
-package yj.mentalai.view
+package yj.mentalai.view.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

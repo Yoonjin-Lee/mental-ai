@@ -11,6 +11,7 @@ composeBom = "2023.08.00"
 google-service = "4.4.2"
 firebaseBom = "33.1.2"
 hilt = "2.51.1"
+hiltNaigation = "1.2.0"
 ksp = "1.9.0-1.0.12"
 
 [libraries]
@@ -32,10 +33,12 @@ firebase-bom = {group = "com.google.firebase", name = "firebase-bom", version.re
 hilt-android = {group = "com.google.dagger", name = "hilt-android", version.ref = "hilt"}
 hilt-compiler = {group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt"}
 firebase-auth-ktx = {group = "com.google.firebase", name = "firebase-auth-ktx"}
+hilt-navigation-compose = {group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNaigation"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services = {id = "com.google.gms.google-services", version.ref = "google-service"}
 ksp = {id = "com.google.devtools.ksp", version.ref = "ksp"}
+hilt = {id = "com.google.dagger.hilt.android", version.ref = "hilt"}
 

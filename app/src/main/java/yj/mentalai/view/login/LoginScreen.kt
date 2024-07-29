@@ -21,9 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun LoginScreen() {
+    val viewModel: LoginViewModel = hiltViewModel()
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -48,7 +51,7 @@ fun LoginScreen() {
             )
             TextField(
                 value = email,
-                onValueChange = {emailField ->
+                onValueChange = { emailField ->
                     email = emailField
                 },
                 label = { Text("Email") },
@@ -57,15 +60,22 @@ fun LoginScreen() {
             )
             TextField(
                 value = password,
-                onValueChange = {passwordField ->
+                onValueChange = { passwordField ->
                     password = passwordField
                 },
                 label = { Text("password") },
                 modifier = Modifier.padding(16.dp),
                 maxLines = 1
             )
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = {
+                viewModel.signIn(email, password)
+            }) {
                 Text(text = "Login with Email")
+            }
+            Button(onClick = {
+                viewModel.signUp(email, password)
+            }) {
+                Text(text = "Create Account with Email")
             }
         }
     }
