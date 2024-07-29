@@ -56,7 +56,7 @@ fun LoginScreen() {
                 },
                 label = { Text("Email") },
                 modifier = Modifier.padding(16.dp),
-                maxLines = 1
+                singleLine = true
             )
             TextField(
                 value = password,
@@ -65,7 +65,7 @@ fun LoginScreen() {
                 },
                 label = { Text("password") },
                 modifier = Modifier.padding(16.dp),
-                maxLines = 1
+                singleLine = true
             )
             Button(onClick = {
                 viewModel.signIn(email, password)
