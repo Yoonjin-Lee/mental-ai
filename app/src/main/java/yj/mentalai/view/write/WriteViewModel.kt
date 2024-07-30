@@ -18,7 +18,7 @@ import javax.inject.Inject
 class WriteViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
-    val firebaseAuth = Firebase.auth
+    val db = Firebase.firestore
 
     fun finish(){
         (context as Activity).finish()
@@ -29,10 +29,12 @@ class WriteViewModel @Inject constructor(
     ){
         val geminiModel = Firebase.vertexAI.generativeModel("gemini-1.5-flash")
 
-        val db = Firebase.firestore
-
         CoroutineScope(Dispatchers.IO).launch {
             val response = geminiModel.generateContent(statement).text.orEmpty()
         }
+    }
+
+    fun getLetter(){
+
     }
 }
