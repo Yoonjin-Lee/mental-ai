@@ -32,6 +32,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import yj.mentalai.R
 import yj.mentalai.ui.theme.MentalAITheme
 import yj.mentalai.ui.theme.Purple40
@@ -40,6 +41,8 @@ import yj.mentalai.ui.theme.PurpleGrey80
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WriteScreen() {
+    val viewModel : WriteViewModel = hiltViewModel()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -53,7 +56,7 @@ fun WriteScreen() {
                     containerColor = PurpleGrey80
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = { viewModel.finish() }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.round_keyboard_arrow_left_24),
                             contentDescription = "뒤로 가기"
@@ -100,7 +103,7 @@ fun WriteScreen() {
                 )
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { viewModel.sendToGemini(statement) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Purple40
