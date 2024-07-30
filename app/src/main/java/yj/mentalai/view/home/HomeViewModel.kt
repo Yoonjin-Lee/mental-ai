@@ -1,4 +1,4 @@
-package yj.mentalai.view.main
+package yj.mentalai.view.home
 
 import android.content.Context
 import android.content.Intent
@@ -10,7 +10,7 @@ import yj.mentalai.view.write.WriteActivity
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     fun writeDiary(

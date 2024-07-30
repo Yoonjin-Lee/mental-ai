@@ -1,10 +1,9 @@
 package yj.mentalai.view.write
 
-import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.google.firebase.vertexai.vertexAI
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import yj.mentalai.view.main.MainActivity
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,7 +21,9 @@ class WriteViewModel @Inject constructor(
     val db = Firebase.firestore
 
     fun finish(){
-        (context as Activity).finish()
+        val intent = Intent(context, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        context.startActivity(intent)
     }
 
     fun sendToGemini(

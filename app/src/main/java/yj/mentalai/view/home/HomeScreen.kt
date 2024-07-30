@@ -44,7 +44,6 @@ import yj.mentalai.ui.theme.Pink80
 import yj.mentalai.ui.theme.Purple80
 import yj.mentalai.ui.theme.PurpleGrey40
 import yj.mentalai.ui.theme.PurpleGrey80
-import yj.mentalai.view.main.MainViewModel
 import kotlin.math.roundToInt
 
 @Composable
@@ -109,7 +108,7 @@ fun DiaryList() {
 fun DiaryItem(
     data: DiaryData
 ) {
-    val viewModel: MainViewModel = hiltViewModel()
+    val viewModel: HomeViewModel = hiltViewModel()
     Card(
         modifier = Modifier
             .background(
@@ -186,7 +185,7 @@ fun GoalList() {
 fun GoalItem(
     data: GoalData
 ) {
-    val viewModel: MainViewModel = hiltViewModel()
+    val viewModel: HomeViewModel = hiltViewModel()
     Card(
         modifier = Modifier
             .background(
