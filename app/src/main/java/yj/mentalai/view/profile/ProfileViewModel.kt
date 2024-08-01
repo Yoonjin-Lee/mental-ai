@@ -32,7 +32,7 @@ class ProfileViewModel @Inject constructor(
         context.startActivity(intent)
     }
 
-    fun getProfile(){
+    private fun getProfile(){
         val db = Firebase.firestore
         val auth = Firebase.auth
         val docRef = db.collection("profile").document(auth.uid.toString())
@@ -44,8 +44,8 @@ class ProfileViewModel @Inject constructor(
                     val profileData = ProfileData(
                         startDate = data["startDate"].toString(),
                         lastDate = data["lastDate"].toString(),
-                        diaryNum = data["diary_num"].toString().toInt(),
-                        goalNum = data["goal_num"].toString().toInt(),
+                        diaryNum = data["diary_num"].toString(),
+                        goalNum = data["goal_num"].toString(),
                     )
                     viewModelScope.launch {
                         _profileFlow.emit(profileData)

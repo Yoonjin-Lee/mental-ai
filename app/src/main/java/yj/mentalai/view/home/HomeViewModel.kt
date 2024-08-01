@@ -2,6 +2,7 @@ package yj.mentalai.view.home
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -35,7 +36,8 @@ class HomeViewModel @Inject constructor(
 
     private fun setting() {
         val db = Firebase.firestore
-        val docRef = db.collection("users").document(Firebase.auth.uid.toString())
+        val docRef = db.collection("profile").document(Firebase.auth.uid.toString())
+        Log.d("HomeViewModel", "uid: ${Firebase.auth.uid.toString()}")
         docRef.get().addOnSuccessListener { doc ->
             if (!doc.exists()) { // 문서가 없는 경우
                 val data = hashMapOf(
@@ -48,8 +50,14 @@ class HomeViewModel @Inject constructor(
                     "goal_mum" to 0
                 )
                 // uid로 문서 id 지정 후, 저장
-                db.collection("users").document(Firebase.auth.uid.toString()).set(data)
+                docRef.set(data).addOnSuccessListener {
+                    Log.d("HomeViewModel", "setting: 저장 완료")
+                }.addOnFailureListener {
+                    Log.d("HomeViewModel", "error: 저장 실패 ${it.message}")
+                }
             }
+        }.addOnFailureListener {
+            Log.d("HomeViewModel", "failure: ${it.message}")
         }
     }
 
