@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,17 +26,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import yj.mentalai.R
-import yj.mentalai.ui.theme.MentalAITheme
+import yj.mentalai.data.server.ProfileData
 import yj.mentalai.ui.theme.Pink60
 import yj.mentalai.ui.theme.Purple40
 import yj.mentalai.ui.theme.PurpleGrey80
 
 @Composable
 fun ProfileScreen() {
+    val viewModel : ProfileViewModel = hiltViewModel()
+    var profileData by remember { mutableStateOf<ProfileData?>(null) }
+
     Scaffold(
         modifier = Modifier.padding(16.dp)
     ) {
@@ -49,10 +53,10 @@ fun ProfileScreen() {
 
             if (logoutClicked) {
                 AlertDialog(
-                    onDismissRequest = { },
+                    onDismissRequest = { logoutClicked = !logoutClicked },
                     confirmButton = {
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = { viewModel.logout() },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Purple40
                             )
@@ -105,14 +109,14 @@ fun ProfileScreen() {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(20.dp)
                         ) {
-                            ProfileCard(title = "일기 시작일", value = "2024년 7월 30일")
-                            ProfileCard(title = "설정 목표 수", value = "10")
+                            ProfileCard(title = "일기 시작일", value = profileData?.startDate.toString())
+                            ProfileCard(title = "일기 작성 수", value = profileData?.diaryNum.toString())
                         }
                         Column(
                             verticalArrangement = Arrangement.spacedBy(20.dp)
                         ) {
-                            ProfileCard(title = "마지막 작성일", value = "2024년 7월 31일")
-                            ProfileCard(title = "현재 진행 수", value = "10")
+                            ProfileCard(title = "마지막 작성일", value = profileData?.lastDate.toString())
+                            ProfileCard(title = "설정 목표 수", value = profileData?.goalNum.toString())
                         }
                     }
                 }
@@ -131,7 +135,11 @@ fun ProfileScreen() {
         }
 
     }
-
+    LaunchedEffect(Unit){
+        viewModel.profileFlow.collect{
+            profileData = it
+        }
+    }
 }
 
 @Composable
@@ -142,13 +150,5 @@ fun ProfileCard(
     Column {
         Text(text = title)
         Text(text = value, fontSize = 13.sp)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenPreview() {
-    MentalAITheme {
-        ProfileScreen()
     }
 }
