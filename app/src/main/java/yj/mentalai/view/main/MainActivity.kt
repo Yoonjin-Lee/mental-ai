@@ -22,7 +22,6 @@ class MainActivity : ComponentActivity() {
                 MainScreen()
             }
         }
-        viewModel.setting()
     }
 }
 
