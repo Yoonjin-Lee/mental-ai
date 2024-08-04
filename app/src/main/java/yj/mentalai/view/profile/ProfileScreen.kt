@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -41,7 +42,9 @@ import yj.mentalai.ui.theme.Purple40
 import yj.mentalai.ui.theme.PurpleGrey80
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    navController: NavController
+) {
     val viewModel : ProfileViewModel = hiltViewModel()
     var profileData by remember { mutableStateOf<ProfileData?>(null) }
 

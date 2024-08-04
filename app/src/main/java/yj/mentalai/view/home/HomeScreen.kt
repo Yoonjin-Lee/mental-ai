@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -21,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,18 +35,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import yj.mentalai.R
-import yj.mentalai.data.GoalData
 import yj.mentalai.ui.theme.Pink60
 import yj.mentalai.ui.theme.Pink80
 import yj.mentalai.ui.theme.Purple80
-import yj.mentalai.ui.theme.PurpleGrey40
 import yj.mentalai.ui.theme.PurpleGrey80
-import kotlin.math.roundToInt
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.navigation.NavHostController
 import yj.mentalai.data.server.LetterData
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navHostController: NavHostController
+) {
+    val viewModel: HomeViewModel = hiltViewModel()
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -59,16 +58,17 @@ fun HomeScreen() {
                 .padding(it)
                 .fillMaxSize()
         ) {
-            DiaryList()
+            DiaryList(viewModel)
             Spacer(modifier = Modifier.padding(10.dp))
-            GoalList()
+            GoalList(viewModel)
         }
     }
 }
 
 @Composable
-fun DiaryList() {
-    val viewModel: HomeViewModel = hiltViewModel()
+fun DiaryList(
+    viewModel: HomeViewModel
+) {
     val diaryList by viewModel.test.observeAsState(emptyList())
 
     Box(
@@ -84,7 +84,7 @@ fun DiaryList() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(diaryList) {
-                Log.d("homeScreen DiaryItem",it.toString())
+                Log.d("homeScreen DiaryItem", it.toString())
                 DiaryItem(it, viewModel)
             }
         }
@@ -96,12 +96,14 @@ fun DiaryItem(
     letterData: LetterData,
     viewModel: HomeViewModel
 ) {
+    val isLetterEmpty = letterData.letter.equals("null")
+
     Card(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
             .clickable {
-                if (!letterData.letter.isNullOrBlank()) { // 일기 작성 안 한 경우
+                if (isLetterEmpty) { // 일기 작성 안 한 경우
                     viewModel.goToWrite(letterData)
                 } else {
                     viewModel.goToLetter(letterData) // 일기를 작성한 경우
@@ -125,7 +127,7 @@ fun DiaryItem(
                     .size(50.dp)
                     .clip(CircleShape)
                     .background(
-                        color = if (!letterData.letter.isNullOrBlank()) Pink60 else Color.White,
+                        color = if (!isLetterEmpty) Pink60 else Color.White,
                         shape = CircleShape
                     )
             )
@@ -134,8 +136,9 @@ fun DiaryItem(
 }
 
 @Composable
-fun GoalList() {
-    val viewModel: HomeViewModel = hiltViewModel()
+fun GoalList(
+    viewModel: HomeViewModel
+) {
     val goalList by viewModel.goalList.observeAsState(emptyList())
 
     Box(
@@ -151,8 +154,8 @@ fun GoalList() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(goalList) {
-                Log.d("homeScreen GoalItem",it)
-                GoalItem(it)
+                Log.d("homeScreen GoalItem", it)
+                GoalItem(it, viewModel)
             }
         }
     }
@@ -160,9 +163,9 @@ fun GoalList() {
 
 @Composable
 fun GoalItem(
-    data: String
+    data: String,
+    viewModel: HomeViewModel
 ) {
-    val viewModel: HomeViewModel = hiltViewModel()
     Card(
         modifier = Modifier
             .background(
@@ -183,9 +186,11 @@ fun GoalItem(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Center
             ) {
-                IconButton(onClick = { viewModel.goToProgress(
-                    data
-                ) }) {
+                IconButton(onClick = {
+                    viewModel.goToProgress(
+                        data
+                    )
+                }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.round_keyboard_arrow_right_24),
                         contentDescription = "화면 이동",

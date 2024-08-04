@@ -172,6 +172,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun addData(
+        goal : String
+    ){
+        val list = _goalList.value ?: emptyList()
+        val newList = list + goal
+        _goalList.value = newList.toCollection(ArrayList())
+        Log.d("HomeViewModel", "addData: ${_goalList.value}")
+    }
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             setting()

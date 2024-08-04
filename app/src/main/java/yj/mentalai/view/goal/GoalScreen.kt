@@ -1,5 +1,6 @@
 package yj.mentalai.view.goal
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -40,7 +42,9 @@ import yj.mentalai.view.home.HomeViewModel
 import yj.mentalai.view.profile.ProfileViewModel
 
 @Composable
-fun GoalScreen() {
+fun GoalScreen(
+    navController: NavController
+) {
     val viewModel: GoalViewModel = hiltViewModel()
     val homeViewModel: HomeViewModel = hiltViewModel()
     val profileViewModel : ProfileViewModel = hiltViewModel()
@@ -75,8 +79,10 @@ fun GoalScreen() {
                                 goal
                             )
                             withContext(Dispatchers.Main){
-                                homeViewModel.getData()
+                                homeViewModel.addData(goal)
                                 profileViewModel.getProfile()
+                                Log.d("test", "test")
+                                goal = ""
                             }
                         }
                     }
@@ -105,7 +111,7 @@ fun GoalScreen() {
             Divider(
                 modifier = Modifier.padding(vertical = 16.dp)
             )
-            GoalList()
+            GoalList(homeViewModel)
         }
     }
 }

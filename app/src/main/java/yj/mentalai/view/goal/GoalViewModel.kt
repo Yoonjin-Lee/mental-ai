@@ -65,4 +65,10 @@ class GoalViewModel @Inject constructor(
             }
         }
     }
+
+    fun toast(
+        message : String
+    ){
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
 }
