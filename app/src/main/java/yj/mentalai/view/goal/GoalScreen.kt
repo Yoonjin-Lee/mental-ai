@@ -22,18 +22,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import yj.mentalai.R
-import yj.mentalai.ui.theme.MentalAITheme
 import yj.mentalai.ui.theme.Purple40
 import yj.mentalai.ui.theme.PurpleGrey80
 import yj.mentalai.view.home.GoalList
 
 @Composable
 fun GoalScreen() {
+    val viewModel: GoalViewModel = hiltViewModel()
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -53,7 +56,16 @@ fun GoalScreen() {
                     text = "목표 설정하기",
                     textAlign = TextAlign.Center
                 )
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {
+                    if (goal.isBlank()) {
+                        viewModel.toast("목표를 입력해주세요")
+                    } else {
+                        keyboardController?.hide()
+                        viewModel.saveGoal(
+                            goal
+                        )
+                    }
+                }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.round_add_24),
                         contentDescription = "목표 추가"
@@ -62,7 +74,7 @@ fun GoalScreen() {
             }
             TextField(
                 value = goal,
-                onValueChange = {field ->
+                onValueChange = { field ->
                     goal = field
                 },
                 colors = TextFieldDefaults.colors(
@@ -80,13 +92,5 @@ fun GoalScreen() {
             )
             GoalList()
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GoalScreenPreview() {
-    MentalAITheme {
-        GoalScreen()
     }
 }

@@ -53,6 +53,11 @@ android {
 }
 
 dependencies {
+    //liveData
+    implementation(libs.runtime)
+    implementation(libs.runtime.livedata)
+    implementation(libs.runtime.rxjava2)
+
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

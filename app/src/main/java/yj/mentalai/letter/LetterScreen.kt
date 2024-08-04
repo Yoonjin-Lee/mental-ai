@@ -13,14 +13,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import yj.mentalai.R
-import yj.mentalai.ui.theme.MentalAITheme
+import yj.mentalai.data.server.LetterData
 import yj.mentalai.ui.theme.PurpleGrey80
 import yj.mentalai.view.write.WriteViewModel
 
@@ -28,6 +33,9 @@ import yj.mentalai.view.write.WriteViewModel
 @Composable
 fun LetterScreen() {
     val viewModel : WriteViewModel = hiltViewModel()
+
+    var content by remember { mutableStateOf<LetterData?>(null) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -55,9 +63,9 @@ fun LetterScreen() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(text = "7월 29일")
+            Text(text = content?.date.toString())
             Text(
-                text = "일기",
+                text = content?.letter.toString(),
                 modifier = Modifier
                     .background(
                         color = PurpleGrey80
@@ -67,12 +75,9 @@ fun LetterScreen() {
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LetterScreenPreview() {
-    MentalAITheme {
-        LetterScreen()
+    LaunchedEffect(Unit) {
+        viewModel.result.collectLatest {
+            content = it
+        }
     }
 }

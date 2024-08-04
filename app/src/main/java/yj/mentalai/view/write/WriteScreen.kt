@@ -21,6 +21,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,18 +30,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import yj.mentalai.R
-import yj.mentalai.ui.theme.MentalAITheme
 import yj.mentalai.ui.theme.Purple40
 import yj.mentalai.ui.theme.PurpleGrey80
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WriteScreen() {
+fun WriteScreen(
+    date : String
+) {
     val viewModel : WriteViewModel = hiltViewModel()
 
     Scaffold(
@@ -78,7 +80,7 @@ fun WriteScreen() {
             var statement by remember { mutableStateOf(String()) }
             val keyboardController = LocalSoftwareKeyboardController.current
 
-            Text(text = "7월 30일")
+            Text(text = date)
             Text(
                 text = ("오늘 어떤 감정을 느꼈는지, 어떤 하루를 보냈는지 기록해보세요"),
                 fontSize = 13.sp
@@ -112,13 +114,5 @@ fun WriteScreen() {
                 Text(text = "멘탈 분석하기")
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun WriteScreenPreview() {
-    MentalAITheme {
-        WriteScreen()
     }
 }

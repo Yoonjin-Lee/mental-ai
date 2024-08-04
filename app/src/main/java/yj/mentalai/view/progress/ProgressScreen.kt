@@ -46,7 +46,9 @@ import yj.mentalai.ui.theme.PurpleGrey80
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProgressScreen() {
+fun ProgressScreen(
+    goal : String
+) {
     var isClicked by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -146,13 +148,5 @@ fun DateCard(
             text = date,
             fontStyle = FontStyle.Italic
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MentalAITheme {
-        ProgressScreen()
     }
 }

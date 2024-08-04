@@ -1,5 +1,6 @@
 package yj.mentalai.view.profile
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -138,6 +139,7 @@ fun ProfileScreen() {
     LaunchedEffect(Unit){
         viewModel.profileFlow.collect{
             profileData = it
+            Log.d("ProfileScreen", "profileData: $profileData")
         }
     }
 }

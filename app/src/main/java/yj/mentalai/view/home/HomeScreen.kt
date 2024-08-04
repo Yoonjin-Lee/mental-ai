@@ -1,5 +1,6 @@
 package yj.mentalai.view.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,20 +33,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import yj.mentalai.R
-import yj.mentalai.data.DiaryData
 import yj.mentalai.data.GoalData
-import yj.mentalai.ui.theme.MentalAITheme
 import yj.mentalai.ui.theme.Pink60
 import yj.mentalai.ui.theme.Pink80
 import yj.mentalai.ui.theme.Purple80
 import yj.mentalai.ui.theme.PurpleGrey40
 import yj.mentalai.ui.theme.PurpleGrey80
 import kotlin.math.roundToInt
+import androidx.compose.runtime.livedata.observeAsState
+import yj.mentalai.data.server.LetterData
 
 @Composable
 fun HomeScreen() {
@@ -67,6 +68,9 @@ fun HomeScreen() {
 
 @Composable
 fun DiaryList() {
+    val viewModel: HomeViewModel = hiltViewModel()
+    val diaryList by viewModel.test.observeAsState(emptyList())
+
     Box(
         modifier = Modifier
             .background(
@@ -76,29 +80,12 @@ fun DiaryList() {
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        val diaryList = listOf(
-            DiaryData(
-                "7월 29일",
-                true
-            ),
-            DiaryData(
-                "7월 30일",
-                false
-            ),
-            DiaryData(
-                "7월 29일",
-                true
-            ),
-            DiaryData(
-                "7월 30일",
-                false
-            )
-        )
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(diaryList) {
-                DiaryItem(it)
+                Log.d("homeScreen DiaryItem",it.toString())
+                DiaryItem(it, viewModel)
             }
         }
     }
@@ -106,16 +93,20 @@ fun DiaryList() {
 
 @Composable
 fun DiaryItem(
-    data: DiaryData
+    letterData: LetterData,
+    viewModel: HomeViewModel
 ) {
-    val viewModel: HomeViewModel = hiltViewModel()
     Card(
         modifier = Modifier
-            .background(
-                color = Color.White,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .clickable { viewModel.writeDiary(data.date) }
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.White)
+            .clickable {
+                if (!letterData.letter.isNullOrBlank()) { // 일기 작성 안 한 경우
+                    viewModel.goToWrite(letterData)
+                } else {
+                    viewModel.goToLetter(letterData) // 일기를 작성한 경우
+                }
+            }
     ) {
         Column(
             modifier = Modifier
@@ -124,19 +115,19 @@ fun DiaryItem(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = data.date,
+                text = letterData.date,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
             )
             Spacer(modifier = Modifier.padding(10.dp))
             Box(
                 modifier = Modifier
+                    .size(50.dp)
+                    .clip(CircleShape)
                     .background(
-                        color = if (data.written) Pink60 else Color.White,
+                        color = if (!letterData.letter.isNullOrBlank()) Pink60 else Color.White,
                         shape = CircleShape
                     )
-                    .clip(shape = CircleShape)
-                    .size(50.dp)
             )
         }
     }
@@ -206,7 +197,9 @@ fun GoalItem(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Center
             ) {
-                IconButton(onClick = { viewModel.goToDetails() }) {
+                IconButton(onClick = { viewModel.goToProgress(
+                    data.title
+                ) }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.round_keyboard_arrow_right_24),
                         contentDescription = "화면 이동",
@@ -227,13 +220,5 @@ fun GoalItem(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    MentalAITheme {
-        HomeScreen()
     }
 }

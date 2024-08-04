@@ -45,7 +45,7 @@ class ProfileViewModel @Inject constructor(
                         startDate = data["startDate"].toString(),
                         lastDate = data["lastDate"].toString(),
                         diaryNum = data["diary_num"].toString(),
-                        goalNum = data["goal_num"].toString(),
+                        goalNum = data["goal_mum"].toString(),
                     )
                     viewModelScope.launch {
                         _profileFlow.emit(profileData)

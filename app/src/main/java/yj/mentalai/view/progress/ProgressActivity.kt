@@ -10,9 +10,10 @@ import yj.mentalai.ui.theme.MentalAITheme
 class ProgressActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val goal = intent.getStringExtra("goal").toString()
         setContent {
             MentalAITheme {
-                ProgressScreen()
+                ProgressScreen(goal)
             }
         }
     }

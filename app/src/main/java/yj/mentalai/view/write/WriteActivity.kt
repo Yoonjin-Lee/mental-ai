@@ -10,9 +10,10 @@ import yj.mentalai.ui.theme.MentalAITheme
 class WriteActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val date = intent.getStringExtra("date").toString()
         setContent {
             MentalAITheme {
-                WriteScreen()
+                WriteScreen(date)
             }
         }
     }
