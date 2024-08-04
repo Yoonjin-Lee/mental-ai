@@ -25,6 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import yj.mentalai.R
 import yj.mentalai.ui.theme.MentalAITheme
 import yj.mentalai.ui.theme.Pink80
@@ -47,16 +50,19 @@ import yj.mentalai.ui.theme.PurpleGrey80
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProgressScreen(
-    goal : String
+    goal: String
 ) {
+    val viewModel: ProgressViewModel = hiltViewModel()
     var isClicked by remember { mutableStateOf(false) }
+
+    val historyList by viewModel.historyList.observeAsState(initial = emptyList())
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("숨 쉬기") },
+                title = { Text(goal) },
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = { viewModel.finish() }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.round_keyboard_arrow_left_24),
                             contentDescription = "뒤로 가기"
@@ -81,24 +87,28 @@ fun ProgressScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    CircularProgressIndicator(
-                        progress = 0.6f,
-                        modifier = Modifier.size(120.dp),
-                        color = Purple40,
-                        strokeWidth = 5.dp,
-                        trackColor = Color.LightGray
-                    )
-                    Text(
-                        text = "60%",
-                        fontSize = 28.sp
-                    )
-                }
+//                Box(
+//                    contentAlignment = Alignment.Center,
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    CircularProgressIndicator(
+//                        progress = 0.6f,
+//                        modifier = Modifier.size(120.dp),
+//                        color = Purple40,
+//                        strokeWidth = 5.dp,
+//                        trackColor = Color.LightGray
+//                    )
+//                    Text(
+//                        text = "60%",
+//                        fontSize = 28.sp
+//                    )
+//                }
                 Button(
-                    onClick = { isClicked = !isClicked },
+                    onClick = {
+                        // 실행한 날짜 저장
+                        viewModel.saveDate(goal)
+                        isClicked = !isClicked
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (isClicked) Color.LightGray else Purple40
                     ),
@@ -111,9 +121,9 @@ fun ProgressScreen(
                 }
             }
             Divider()
-            val l = listOf("2024년 7월 20일", "2024년 7월 20일")
             Text(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
                     .fillMaxWidth(),
                 text = "실천 날짜",
                 fontSize = 18.sp,
@@ -122,7 +132,7 @@ fun ProgressScreen(
             LazyColumn(
                 modifier = Modifier.padding(16.dp, 0.dp)
             ) {
-                items(l){element ->
+                items(historyList) { element ->
                     DateCard(date = element)
                 }
             }
@@ -133,7 +143,7 @@ fun ProgressScreen(
 @Composable
 fun DateCard(
     date: String
-){
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()

@@ -135,23 +135,8 @@ fun DiaryItem(
 
 @Composable
 fun GoalList() {
-    val goalList = listOf(
-        GoalData(
-            "밥 먹기",
-            7,
-            3
-        ),
-        GoalData(
-            "밥 먹기",
-            7,
-            3
-        ),
-        GoalData(
-            "밥 먹기",
-            7,
-            3
-        )
-    )
+    val viewModel: HomeViewModel = hiltViewModel()
+    val goalList by viewModel.goalList.observeAsState(emptyList())
 
     Box(
         modifier = Modifier
@@ -174,7 +159,7 @@ fun GoalList() {
 
 @Composable
 fun GoalItem(
-    data: GoalData
+    data: String
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     Card(
@@ -190,7 +175,7 @@ fun GoalItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = data.title,
+                text = data,
                 Modifier.padding(10.dp)
             )
             Column(
@@ -198,26 +183,26 @@ fun GoalItem(
                 verticalArrangement = Arrangement.Center
             ) {
                 IconButton(onClick = { viewModel.goToProgress(
-                    data.title
+                    data
                 ) }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.round_keyboard_arrow_right_24),
                         contentDescription = "화면 이동",
                     )
                 }
-                Text(
-                    text = (data.progress.toFloat() / data.total * 100).roundToInt()
-                        .toString() + "%",
-                    modifier = Modifier.padding(10.dp)
-                )
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .width(100.dp),
-                    progress = data.progress.toFloat() / data.total,
-                    color = PurpleGrey40,
-                    trackColor = PurpleGrey80
-                )
+//                Text(
+//                    text = (data.progress.toFloat() / data.total * 100).roundToInt()
+//                        .toString() + "%",
+//                    modifier = Modifier.padding(10.dp)
+//                )
+//                LinearProgressIndicator(
+//                    modifier = Modifier
+//                        .padding(10.dp)
+//                        .width(100.dp),
+//                    progress = data.progress.toFloat() / data.total,
+//                    color = PurpleGrey40,
+//                    trackColor = PurpleGrey80
+//                )
             }
         }
     }
