@@ -3,12 +3,16 @@ package yj.mentalai.view.goal
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import yj.mentalai.view.home.HomeViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,12 +44,25 @@ class GoalViewModel @Inject constructor(
                 }
             }
         }
-        toast("목표를 저장했습니다")
-    }
+        val profileRef = db.collection("profile").document(Firebase.auth.uid.toString())
 
-    fun toast(
-        message : String
-    ){
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        profileRef.get().addOnSuccessListener {doc ->
+            val data = doc.data
+            if (doc.exists() && data != null) {
+                val map = hashMapOf(
+                    "uid" to Firebase.auth.uid.toString(),
+                    "startDate" to data["startDate"],
+                    "lastDate" to LocalDateTime.now()
+                        .format(DateTimeFormatter.ofPattern("MM월 dd일")),
+                    "diary_num" to data["diary_num"],
+                    "goal_mum" to data["goal_mum"] as Long + 1
+                )
+                profileRef.update(map).addOnSuccessListener {
+                    Log.d("fun writeDiary", "profile success -> $it")
+                }.addOnFailureListener {
+                    Log.d("fun writeDiary", "profile fail -> $it")
+                }
+            }
+        }
     }
 }

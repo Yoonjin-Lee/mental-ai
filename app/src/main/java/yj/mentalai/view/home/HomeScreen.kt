@@ -151,6 +151,7 @@ fun GoalList() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(goalList) {
+                Log.d("homeScreen GoalItem",it)
                 GoalItem(it)
             }
         }

@@ -21,7 +21,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +32,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import kotlinx.coroutines.flow.collectLatest
 import yj.mentalai.R
 import yj.mentalai.ui.theme.Purple40
 import yj.mentalai.ui.theme.PurpleGrey80
@@ -41,9 +39,9 @@ import yj.mentalai.ui.theme.PurpleGrey80
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WriteScreen(
-    date : String
+    date: String
 ) {
-    val viewModel : WriteViewModel = hiltViewModel()
+    val viewModel: WriteViewModel = hiltViewModel()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -92,8 +90,7 @@ fun WriteScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    ,
+                    .weight(1f),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = PurpleGrey80,
                     unfocusedContainerColor = PurpleGrey80,
@@ -105,7 +102,10 @@ fun WriteScreen(
                 )
             )
             Button(
-                onClick = { viewModel.sendToGemini(statement) },
+                onClick = {
+                    viewModel.sendToGemini(date, statement)
+                    viewModel.showToast("잠시만 기다려주세요")
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Purple40

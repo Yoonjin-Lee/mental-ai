@@ -1,5 +1,6 @@
 package yj.mentalai.letter
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,7 +32,10 @@ import yj.mentalai.view.write.WriteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LetterScreen() {
+fun LetterScreen(
+    date : String,
+    letter : String
+) {
     val viewModel : WriteViewModel = hiltViewModel()
 
     var content by remember { mutableStateOf<LetterData?>(null) }
@@ -63,9 +67,9 @@ fun LetterScreen() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(text = content?.date.toString())
+            Text(text = date)
             Text(
-                text = content?.letter.toString(),
+                text = letter,
                 modifier = Modifier
                     .background(
                         color = PurpleGrey80
@@ -73,11 +77,6 @@ fun LetterScreen() {
                     .fillMaxSize()
                     .padding(10.dp)
             )
-        }
-    }
-    LaunchedEffect(Unit) {
-        viewModel.result.collectLatest {
-            content = it
         }
     }
 }

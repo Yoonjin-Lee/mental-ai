@@ -65,7 +65,7 @@ class HomeViewModel @Inject constructor(
         context.startActivity(intent)
     }
 
-    private fun getData() {
+    fun getData() {
         val docRef = db.collection("diary").document(Firebase.auth.uid.toString())
         docRef.get().addOnSuccessListener { doc ->
             val data = doc.data

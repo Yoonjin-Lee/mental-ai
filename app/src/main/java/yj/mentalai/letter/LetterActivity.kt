@@ -10,9 +10,11 @@ import yj.mentalai.ui.theme.MentalAITheme
 class LetterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val date = intent.getStringExtra("date").toString()
+        val letter = intent.getStringExtra("letter").toString()
         setContent {
             MentalAITheme {
-                LetterScreen()
+                LetterScreen(date, letter)
             }
         }
     }

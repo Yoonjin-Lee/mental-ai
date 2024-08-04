@@ -32,7 +32,7 @@ class ProfileViewModel @Inject constructor(
         context.startActivity(intent)
     }
 
-    private fun getProfile(){
+    fun getProfile(){
         val db = Firebase.firestore
         val auth = Firebase.auth
         val docRef = db.collection("profile").document(auth.uid.toString())

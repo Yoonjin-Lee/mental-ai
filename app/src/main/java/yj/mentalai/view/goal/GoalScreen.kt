@@ -27,14 +27,23 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import yj.mentalai.R
 import yj.mentalai.ui.theme.Purple40
 import yj.mentalai.ui.theme.PurpleGrey80
 import yj.mentalai.view.home.GoalList
+import yj.mentalai.view.home.HomeViewModel
+import yj.mentalai.view.profile.ProfileViewModel
 
 @Composable
 fun GoalScreen() {
     val viewModel: GoalViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel()
+    val profileViewModel : ProfileViewModel = hiltViewModel()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
@@ -61,9 +70,15 @@ fun GoalScreen() {
                         viewModel.toast("목표를 입력해주세요")
                     } else {
                         keyboardController?.hide()
-                        viewModel.saveGoal(
-                            goal
-                        )
+                        CoroutineScope(Dispatchers.IO).launch {
+                            viewModel.saveGoal(
+                                goal
+                            )
+                            withContext(Dispatchers.Main){
+                                homeViewModel.getData()
+                                profileViewModel.getProfile()
+                            }
+                        }
                     }
                 }) {
                     Icon(

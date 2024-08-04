@@ -3,6 +3,7 @@ package yj.mentalai.view.write
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
@@ -29,12 +30,6 @@ class WriteViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val db = Firebase.firestore
-    private val intent = Intent()
-    private val date = intent.getStringExtra("date")
-    private val letter = intent.getStringExtra("letter")
-
-    private val _result = MutableStateFlow<LetterData?>(null)
-    val result = _result.asStateFlow()
 
     fun finish() {
         val intent = Intent(context, MainActivity::class.java)
@@ -43,6 +38,7 @@ class WriteViewModel @Inject constructor(
     }
 
     fun sendToGemini(
+        date : String,
         statement: String
     ) {
         val geminiModel = Firebase.vertexAI.generativeModel("gemini-1.5-flash")
@@ -55,30 +51,19 @@ class WriteViewModel @Inject constructor(
             withContext(Dispatchers.IO) {
                 saveDB( // DB 저장
                     LetterData(
-                        date = date.toString(),
-                        letter = letter.toString()
+                        date = date,
+                        letter = statement
                     )
                 )
+                withContext(Dispatchers.Main){
+                    val intent = Intent(context, LetterActivity::class.java)
+                    intent.putExtra("date", date)
+                    intent.putExtra("letter", response)
+                    Log.d("fun sendToGemini intent", "response -> $response")
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    context.startActivity(intent)
+                }
             }
-            withContext(Dispatchers.Main){
-                val intent = Intent(context, LetterActivity::class.java)
-                intent.putExtra("date", date)
-                intent.putExtra("letter", response)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                context.startActivity(intent)
-            }
-        }
-    }
-
-    // LetterScreen 으로 값을 보내는 함수
-    private fun getLetter() {
-        viewModelScope.launch {
-            _result.emit(
-                LetterData(
-                    date = date.toString(),
-                    letter = letter.toString()
-                )
-            )
         }
     }
 
@@ -91,16 +76,16 @@ class WriteViewModel @Inject constructor(
             val data = doc.data
             if (doc.exists() && data != null) {
                 val list = data["list"] as ArrayList<HashMap<String, String?>>
-                list.add(
-                    hashMapOf(
-                        "date" to letterData.date,
-                        "letter" to letterData.letter
-                    )
-                )
+                for(l in list){
+                    if(l["date"] == letterData.date){
+                        l["letter"] = letterData.letter
+                        break
+                    }
+                }
                 docRef.update("list", list).addOnSuccessListener {
-                    Log.d("fun writeDiary", "success -> $it")
+                    Log.d("fun saveDB save to diary", "success -> $it")
                 }.addOnFailureListener {
-                    Log.d("fun writeDiary", "fail -> $it")
+                    Log.d("fun saveDB save to diary", "fail -> $it")
                 }
             }
         }
@@ -116,18 +101,20 @@ class WriteViewModel @Inject constructor(
                     "lastDate" to LocalDateTime.now()
                         .format(DateTimeFormatter.ofPattern("MM월 dd일")),
                     "diary_num" to data["diary_num"] as Long + 1,
-                    "goal_mum" to 0
+                    "goal_mum" to data["goal_num"]
                 )
                 profileRef.update(map).addOnSuccessListener {
-                    Log.d("fun writeDiary", "profile success -> $it")
+                    Log.d("fun saveDB save to profile", "profile success -> $it")
                 }.addOnFailureListener {
-                    Log.d("fun writeDiary", "profile fail -> $it")
+                    Log.d("fun saveDB save to profile", "profile fail -> $it")
                 }
             }
         }
     }
 
-    init {
-        getLetter()
+    fun showToast(
+        message : String
+    ){
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }

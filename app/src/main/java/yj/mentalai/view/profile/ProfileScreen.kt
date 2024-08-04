@@ -30,6 +30,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import kotlinx.coroutines.flow.collectLatest
 import yj.mentalai.R
 import yj.mentalai.data.server.ProfileData
 import yj.mentalai.ui.theme.Pink60
@@ -99,7 +103,7 @@ fun ProfileScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "사용자 이름",
+                        text = FirebaseAuth.getInstance().currentUser?.email ?: "사용자 이메일",
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
@@ -137,7 +141,7 @@ fun ProfileScreen() {
 
     }
     LaunchedEffect(Unit){
-        viewModel.profileFlow.collect{
+        viewModel.profileFlow.collectLatest{
             profileData = it
             Log.d("ProfileScreen", "profileData: $profileData")
         }
