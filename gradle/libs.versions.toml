@@ -12,7 +12,7 @@ google-service = "4.4.2"
 firebaseBom = "33.1.2"
 hilt = "2.51.1"
 hiltNaigation = "1.2.0"
-ksp = "1.9.0-1.0.12"
+ksp = "2.1.0-1.0.29"
 vertexai = "16.0.0-beta03"
 composeRuntime = "1.6.7"
 
