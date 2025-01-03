@@ -2,6 +2,7 @@ package yj.mentalai.view.profile
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
@@ -38,10 +39,15 @@ class ProfileViewModel @Inject constructor(
         val auth = Firebase.auth
         val docRef = db.collection("profile").document(auth.uid.toString())
 
-        docRef.get(Source.SERVER).addOnSuccessListener { doc ->
-            if (doc != null && doc.exists()){ // 문서가 있는 경우
-                val data = doc.data
-                if (data != null){
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.e("Firestore", "Listen failed.", e)
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                val data = snapshot.data
+                if (data != null) {
                     val profileData = ProfileData(
                         startDate = data["startDate"].toString(),
                         lastDate = data["lastDate"].toString(),
@@ -49,6 +55,7 @@ class ProfileViewModel @Inject constructor(
                         goalNum = data["goal_mum"].toString(),
                     )
                     viewModelScope.launch {
+                        Log.d("Flow", "emit")
                         _profileFlow.emit(profileData)
                     }
                 }

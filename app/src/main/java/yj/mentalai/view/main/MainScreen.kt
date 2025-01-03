@@ -93,11 +93,6 @@ fun MainScreen() {
                             Text(text = it.title)
                         }
                     )
-
-                    // profile 페이지로 갈 때마다 값을 업데이트 해줘야 함
-                    if (selectedItem == 2) {
-                        ProfileViewModel(LocalContext.current).getProfile()
-                    }
                 }
             }
         },
