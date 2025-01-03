@@ -23,6 +23,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -99,7 +100,8 @@ class HomeViewModel @Inject constructor(
                     saveList.add(
                         LetterData(
                             i["date"].toString(),
-                            i["letter"].toString()
+                            i["letter"].toString(),
+                            i["response"].toString()
                         )
                     )
                 }
@@ -164,7 +166,7 @@ class HomeViewModel @Inject constructor(
     /*
      * 문서에서 오늘 날짜 문서를 확인하고, 없으면 추가하는 함수
      */
-    private fun dailyUpdate() {
+    fun dailyUpdate(){
         val docRef = db.collection("diary").document(Firebase.auth.uid.toString())
 
         docRef.get().addOnSuccessListener { doc ->
@@ -191,7 +193,8 @@ class HomeViewModel @Inject constructor(
                 list.add(
                     LetterData(
                         date = today,
-                        letter = null
+                        letter = null,
+                        response = null
                     )
                 )
                 val map = hashMapOf(
@@ -223,6 +226,8 @@ class HomeViewModel @Inject constructor(
             // 설정과 편지 문서의 날짜를 확인하고
             setting()
             dailyUpdate()
+            // 데이터가 반영되는 시간이 걸려서 딜레이 줌
+            Thread.sleep(500)
             withContext(Dispatchers.IO) {
                 // 최신 데이터를 가져온다.
                 getData()

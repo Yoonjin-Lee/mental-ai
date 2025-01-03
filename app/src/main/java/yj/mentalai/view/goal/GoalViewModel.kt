@@ -17,10 +17,12 @@ import javax.inject.Inject
 class GoalViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
+    // 목표 추가
     fun saveGoal(goal: String) {
         val db = Firebase.firestore
         val docRef = db.collection("goal").document(Firebase.auth.uid.toString())
 
+        // 목표 추가
         docRef.get().addOnSuccessListener { doc ->
             val data = doc.data
             if (doc.exists() && data != null) { // 문서가 존재할 경우
@@ -47,6 +49,8 @@ class GoalViewModel @Inject constructor(
                 }
             }
         }
+
+        // 목표 개수 변경
         val profileRef = db.collection("profile").document(Firebase.auth.uid.toString())
 
         profileRef.get().addOnSuccessListener {doc ->

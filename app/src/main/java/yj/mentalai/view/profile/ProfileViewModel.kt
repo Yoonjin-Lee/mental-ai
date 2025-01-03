@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -37,7 +38,7 @@ class ProfileViewModel @Inject constructor(
         val auth = Firebase.auth
         val docRef = db.collection("profile").document(auth.uid.toString())
 
-        docRef.get().addOnSuccessListener {doc ->
+        docRef.get(Source.SERVER).addOnSuccessListener { doc ->
             if (doc != null && doc.exists()){ // 문서가 있는 경우
                 val data = doc.data
                 if (data != null){

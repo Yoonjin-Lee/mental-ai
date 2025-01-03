@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
@@ -26,6 +27,7 @@ import yj.mentalai.navigation.NaviDestination
 import yj.mentalai.navigation.NavigationGraph
 import yj.mentalai.ui.theme.MentalAITheme
 import yj.mentalai.ui.theme.PurpleGrey80
+import yj.mentalai.view.profile.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,6 +93,11 @@ fun MainScreen() {
                             Text(text = it.title)
                         }
                     )
+
+                    // profile 페이지로 갈 때마다 값을 업데이트 해줘야 함
+                    if (selectedItem == 2) {
+                        ProfileViewModel(LocalContext.current).getProfile()
+                    }
                 }
             }
         },

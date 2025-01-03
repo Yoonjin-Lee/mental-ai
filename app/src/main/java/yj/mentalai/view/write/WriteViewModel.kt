@@ -52,7 +52,8 @@ class WriteViewModel @Inject constructor(
                 saveDB( // DB 저장
                     LetterData(
                         date = date,
-                        letter = statement
+                        letter = statement,
+                        response = response
                     )
                 )
                 withContext(Dispatchers.Main){
