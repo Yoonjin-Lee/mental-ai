@@ -3,6 +3,7 @@ package yj.mentalai.view.home
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
@@ -29,13 +30,19 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     private val db = Firebase.firestore
     private val _test = MutableLiveData<ArrayList<LetterData>>()
-    val test: MutableLiveData<ArrayList<LetterData>>
+
+    // 작성한 글 리스트
+    val test : LiveData<ArrayList<LetterData>>
         get() = _test
 
+    // 목표 리스트
     private val _goalList = MutableLiveData<ArrayList<String>>()
-    val goalList: MutableLiveData<ArrayList<String>>
+    val goalList: LiveData<ArrayList<String>>
         get() = _goalList
 
+    /*
+    * 작성 화면으로 이동
+     */
     fun goToWrite(
         letterData: LetterData
     ) {
@@ -46,6 +53,9 @@ class HomeViewModel @Inject constructor(
         context.startActivity(intent)
     }
 
+    /*
+    * 편지를 볼 수 있는 화면으로 이동
+     */
     fun goToLetter(
         letterData: LetterData
     ) {
@@ -56,6 +66,9 @@ class HomeViewModel @Inject constructor(
         context.startActivity(intent)
     }
 
+    /*
+     * 지금까지 작성한 글을 볼 수 있는 화면으로 이동
+     */
     fun goToProgress(
         goal: String
     ) {
@@ -65,13 +78,23 @@ class HomeViewModel @Inject constructor(
         context.startActivity(intent)
     }
 
-    fun getData() {
+    /*
+    * 데이터베이스에서 데이터를 가져오는 함수
+     */
+    private fun getData() {
         val docRef = db.collection("diary").document(Firebase.auth.uid.toString())
         docRef.get().addOnSuccessListener { doc ->
             val data = doc.data
             if (doc.exists() && data != null) { // 문서가 있는 경우
                 val saveList = ArrayList<LetterData>()
-                val list = data["list"] as ArrayList<HashMap<String, String?>>
+                val list : ArrayList<HashMap<String, String?>>
+
+                // 문서가 있어도 data["list"]가 없을 수 있으므로 null 체크
+                if (data["list"] == null) {
+                    list = arrayListOf()
+                }else {
+                    list = data["list"] as ArrayList<HashMap<String, String?>>
+                }
                 for (i in list) {
                     saveList.add(
                         LetterData(
@@ -82,7 +105,7 @@ class HomeViewModel @Inject constructor(
                 }
                 _test.value = saveList
 
-                Log.d("HomeViewModel", "getData: ${saveList}")
+                Log.d("HomeViewModel", "getData: $saveList")
             } else { // 문서가 없는 경우
                 Log.d("HomeViewModel", "getData: 문서가 없습니다.")
             }
@@ -93,6 +116,11 @@ class HomeViewModel @Inject constructor(
             val data = doc.data
             if (doc.exists() && data != null) { // 문서가 있는 경우
                 val saveList = ArrayList<String>()
+                // 문서가 있어도 data["list"]가 없을 수 있으므로 null 체크
+                if (data["list"] == null) {
+                    _goalList.value = saveList
+                    return@addOnSuccessListener
+                }
                 val list = data["list"] as ArrayList<HashMap<String, Any>>
                 for (i in list) {
                     saveList.add(
@@ -104,6 +132,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /*
+    * 설정 화면으로 이동하는 함수
+     */
     private fun setting() {
         val docRef = db.collection("profile").document(Firebase.auth.uid.toString())
 
@@ -130,6 +161,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /*
+     * 문서에서 오늘 날짜 문서를 확인하고, 없으면 추가하는 함수
+     */
     private fun dailyUpdate() {
         val docRef = db.collection("diary").document(Firebase.auth.uid.toString())
 
@@ -172,6 +206,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /*
+     * 데이터베이스에 데이터를 추가하는 함수
+     */
     fun addData(
         goal : String
     ){
@@ -183,9 +220,11 @@ class HomeViewModel @Inject constructor(
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
+            // 설정과 편지 문서의 날짜를 확인하고
             setting()
             dailyUpdate()
             withContext(Dispatchers.IO) {
+                // 최신 데이터를 가져온다.
                 getData()
             }
         }

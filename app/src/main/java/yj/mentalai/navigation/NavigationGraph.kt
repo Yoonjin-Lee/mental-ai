@@ -15,7 +15,7 @@ fun NavigationGraph(
 ) {
     NavHost(navController = navController, startDestination = "HomeScreen") {
         composable("HomeScreen") {
-            HomeScreen(navController)
+            HomeScreen()
         }
         composable("GoalScreen"){
             GoalScreen(navController)

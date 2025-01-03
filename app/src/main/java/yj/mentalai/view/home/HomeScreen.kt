@@ -40,12 +40,10 @@ import yj.mentalai.ui.theme.Pink80
 import yj.mentalai.ui.theme.Purple80
 import yj.mentalai.ui.theme.PurpleGrey80
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.navigation.NavHostController
 import yj.mentalai.data.server.LetterData
 
 @Composable
 fun HomeScreen(
-    navHostController: NavHostController
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     Scaffold(

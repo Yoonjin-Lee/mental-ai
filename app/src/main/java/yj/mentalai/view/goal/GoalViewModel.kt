@@ -3,14 +3,12 @@ package yj.mentalai.view.goal
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import yj.mentalai.view.home.HomeViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -26,7 +24,12 @@ class GoalViewModel @Inject constructor(
         docRef.get().addOnSuccessListener { doc ->
             val data = doc.data
             if (doc.exists() && data != null) { // 문서가 존재할 경우
-                val list = data["list"] as ArrayList<HashMap<Any, Any>>
+                var list : ArrayList<HashMap<Any, Any>> = arrayListOf()
+
+                // 문서는 존재하지만 데이터가 없는 경우
+                if (data["list"] != null) {
+                    list = data["list"] as ArrayList<HashMap<Any, Any>>
+                }
                 val history = listOf<String>()
                 list.add(hashMapOf("name" to goal, "history" to history))
                 docRef.update("list", list)
