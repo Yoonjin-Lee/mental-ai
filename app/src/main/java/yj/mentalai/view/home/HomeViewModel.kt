@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -84,7 +85,8 @@ class HomeViewModel @Inject constructor(
      */
     private fun getData() {
         val docRef = db.collection("diary").document(Firebase.auth.uid.toString())
-        docRef.get().addOnSuccessListener { doc ->
+
+        docRef.get(Source.SERVER).addOnSuccessListener { doc ->
             val data = doc.data
             if (doc.exists() && data != null) { // 문서가 있는 경우
                 val saveList = ArrayList<LetterData>()
@@ -114,7 +116,7 @@ class HomeViewModel @Inject constructor(
         }
 
         val goalRef = db.collection("goal").document(Firebase.auth.uid.toString())
-        goalRef.get().addOnSuccessListener { doc ->
+        goalRef.get(Source.SERVER).addOnSuccessListener { doc ->
             val data = doc.data
             if (doc.exists() && data != null) { // 문서가 있는 경우
                 val saveList = ArrayList<String>()
@@ -149,7 +151,7 @@ class HomeViewModel @Inject constructor(
                     "lastDate" to LocalDateTime.now()
                         .format(DateTimeFormatter.ofPattern("MM월 dd일")),
                     "diary_num" to 0,
-                    "goal_mum" to 0
+                    "goal_num" to 0
                 )
                 // uid로 문서 id 지정 후, 저장
                 docRef.set(data).addOnSuccessListener {

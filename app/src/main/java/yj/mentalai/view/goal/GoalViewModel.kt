@@ -41,7 +41,7 @@ class GoalViewModel @Inject constructor(
                         hashMapOf("name" to goal, "history" to listOf<String>())
                     )
                 docRef.set(
-                    "list" to arrayListOf
+                    mapOf("list" to arrayListOf)
                 ).addOnSuccessListener {
                     Log.d("GoalViewModel", "Goal saved successfully")
                 }.addOnFailureListener {
@@ -56,13 +56,14 @@ class GoalViewModel @Inject constructor(
         profileRef.get().addOnSuccessListener {doc ->
             val data = doc.data
             if (doc.exists() && data != null) {
+                println(data)
                 val map = hashMapOf(
                     "uid" to Firebase.auth.uid.toString(),
                     "startDate" to data["startDate"],
                     "lastDate" to LocalDateTime.now()
                         .format(DateTimeFormatter.ofPattern("MM월 dd일")),
                     "diary_num" to data["diary_num"],
-                    "goal_mum" to data["goal_mum"] as Long + 1
+                    "goal_num" to data["goal_num"] as Long + 1
                 )
                 profileRef.update(map).addOnSuccessListener {
                     Log.d("fun writeDiary", "profile success -> $it")

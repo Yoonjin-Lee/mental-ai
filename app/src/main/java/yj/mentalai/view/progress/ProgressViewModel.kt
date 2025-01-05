@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -63,7 +64,7 @@ class ProgressViewModel @Inject constructor(
         goal: String
     ) {
         val docRef = db.collection("goal").document(Firebase.auth.uid.toString())
-        docRef.get().addOnSuccessListener { doc ->
+        docRef.get(Source.SERVER).addOnSuccessListener { doc ->
             val data = doc.data
             if (doc.exists() && data != null) {
                 val list = data["list"] as ArrayList<HashMap<String, Any>>
