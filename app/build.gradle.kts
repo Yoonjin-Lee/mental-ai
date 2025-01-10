@@ -53,6 +53,9 @@ android {
 }
 
 dependencies {
+    //markdown
+    implementation(libs.compose.markwon)
+
     //liveData
     implementation(libs.runtime)
     implementation(libs.runtime.livedata)

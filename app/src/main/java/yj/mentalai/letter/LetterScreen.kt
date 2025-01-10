@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.flow.collectLatest
 import yj.mentalai.R
 import yj.mentalai.data.server.LetterData
@@ -68,8 +69,8 @@ fun LetterScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(text = date)
-            Text(
-                text = letter,
+            MarkdownText(
+                markdown = letter,
                 modifier = Modifier
                     .background(
                         color = PurpleGrey80
