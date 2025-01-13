@@ -34,7 +34,7 @@ Mental AI는 사용자가 감정적으로 어려운 시기에 도움을 받을 �
 
 ---
 
-## 📷 Screenshots and Videos (사진과 영상)
+## 📷 Videos (시연 영상)
 - **[Write a Diary](#)**: Write a diary and get a response from Gemini.  
   ![mental ai write a diary](https://github.com/user-attachments/assets/72aee4c1-7ace-4090-9f2f-a952d4933fca)
 
