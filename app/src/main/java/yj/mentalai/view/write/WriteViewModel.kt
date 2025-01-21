@@ -56,14 +56,16 @@ class WriteViewModel @Inject constructor(
                         response = response
                     )
                 )
-                withContext(Dispatchers.Main){
-                    val intent = Intent(context, LetterActivity::class.java)
-                    intent.putExtra("date", date)
-                    intent.putExtra("letter", response)
-                    Log.d("fun sendToGemini intent", "response -> $response")
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    context.startActivity(intent)
-                }
+            }
+
+            // 페이지 이동 후,액티비티 종료
+            withContext(Dispatchers.Main){
+                val intent = Intent(context, LetterActivity::class.java)
+                intent.putExtra("date", date)
+                intent.putExtra("letter", response)
+                Log.d("fun sendToGemini intent", "response -> $response")
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context.startActivity(intent)
             }
         }
     }

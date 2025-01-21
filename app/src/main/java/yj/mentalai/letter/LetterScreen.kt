@@ -69,6 +69,7 @@ fun LetterScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(text = date)
+            // gemini 답변 Text
             MarkdownText(
                 markdown = letter,
                 modifier = Modifier
