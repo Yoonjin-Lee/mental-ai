@@ -13,7 +13,7 @@ firebaseBom = "33.7.0"
 hilt = "2.51.1"
 hiltNaigation = "1.2.0"
 ksp = "1.9.0-1.0.13"
-vertexai = "16.0.0-beta03"
+vertexai = "16.2.0"
 composeRuntime = "1.7.6"
 markdown = "0.5.6"
 
