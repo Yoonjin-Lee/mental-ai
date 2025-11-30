@@ -41,7 +41,7 @@ class WriteViewModel @Inject constructor(
         date : String,
         statement: String
     ) {
-        val geminiModel = Firebase.vertexAI.generativeModel("gemini-1.5-flash")
+        val geminiModel = Firebase.vertexAI.generativeModel("gemini-2.5-flash")
 
         CoroutineScope(Dispatchers.IO).launch {
             val response = geminiModel.generateContent(statement).text.orEmpty()
