@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    kotlin("plugin.serialization") version "2.2.10"
 }
 
 android {
@@ -53,6 +54,9 @@ android {
 }
 
 dependencies {
+    //serialization
+    implementation(libs.kotlinx.serialization.json)
+
     //markdown
     implementation(libs.compose.markwon)
 
